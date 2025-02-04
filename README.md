@@ -146,11 +146,13 @@ def update_proxy(self, request: Request) -> Request:
 ```
 
 ## Version
-
+* `1.0.2`:【2025年2月4日】
+  1. fix bug in `1.0.1`
+---
 * `1.0.1`:【2025年2月4日】
   1. 修改`1.0.0`中的Bug(①修改包名,②完善README.md文档)
   2. 推送项目到Pypi,用户可以使用pip进行下载
   3. 首次推送项目到[Gitee](https://gitee.com/twilight-and-morning-mist/Scrapy-Proxy-IP-Pool): 
-***
+---
 * `1.0.0`:【2025年2月3日】
   1. 首次推送至[GitHub](https://github.com/Tlyer233/Scrapy-Proxy-IP-Pool),能够实现代理池功能

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='scrapy_proxy_ip_pool',
-    version='1.0.0',
+    version='1.0.2',
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     install_requires=[

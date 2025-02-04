@@ -29,7 +29,7 @@ class ProxyPoolDownloaderMiddleware:
     def __init__(self, settings: BaseSettings, spider):
         # 该中间件的权值必须大于RetryMiddleware中间件
         downloader_middlewares_list = settings.getdict("DOWNLOADER_MIDDLEWARES")
-        proxy_pool_order = downloader_middlewares_list.get("scrapy_proxy_pool.middlewares.ProxyPoolDownloaderMiddleware", None)
+        proxy_pool_order = downloader_middlewares_list.get("scrapy_proxy_ip_pool.proxy_pool_downloader_middleware.ProxyPoolDownloaderMiddleware", None)
         retry_order = downloader_middlewares_list.get("scrapy.downloadermiddlewares.retry.RetryMiddleware", 550)
         if retry_order is not None and proxy_pool_order is not None and proxy_pool_order <= retry_order:
             raise ValueError(f"'scrapy_proxy_ip_pool.proxy_pool_downloader_middleware.ProxyPoolDownloaderMiddleware':{proxy_pool_order}必须大于'scrapy.downloadermiddlewares.retry.RetryMiddleware':{retry_order}")
