@@ -28,12 +28,11 @@ NEED_UPDATE_PROXY_CODES = [
 class ProxyPoolDownloaderMiddleware:
     def __init__(self, settings: BaseSettings, spider):
         # 该中间件的权值必须大于RetryMiddleware中间件
-        proxy_pool_middleware_path = f"{self.__module__}.{self.__class__.__name__}"
-        retry_middleware_path = "scrapy.downloadermiddlewares.retry.RetryMiddleware"
-        priority_retry = settings.getint(f"DOWNLOADER_MIDDLEWARES.{proxy_pool_middleware_path}", None)
-        priority_cur = settings.getint(f"DOWNLOADER_MIDDLEWARES.{retry_middleware_path}", None)
-        if priority_retry is not None and priority_cur is not None and priority_cur <= priority_retry:
-            raise ValueError(f"IP代理池中间件 {proxy_pool_middleware_path} 的权值 ({priority_cur}) 必须大于 RetryMiddleware ({retry_middleware_path}) 的权值 ({priority_retry})")
+        downloader_middlewares_list = settings.getdict("DOWNLOADER_MIDDLEWARES")
+        proxy_pool_order = downloader_middlewares_list.get("scrapy_proxy_pool.middlewares.ProxyPoolDownloaderMiddleware", None)
+        retry_order = downloader_middlewares_list.get("scrapy.downloadermiddlewares.retry.RetryMiddleware", 550)
+        if retry_order is not None and proxy_pool_order is not None and proxy_pool_order <= retry_order:
+            raise ValueError(f"'scrapy_proxy_ip_pool.proxy_pool_downloader_middleware.ProxyPoolDownloaderMiddleware':{proxy_pool_order}必须大于'scrapy.downloadermiddlewares.retry.RetryMiddleware':{retry_order}")
         # 必须重写"获取代理IP"的方法
         if not hasattr(spider, "get_proxy_ip"):
             raise NotImplementedError("spider中必须实现'get_proxy_ip' ")

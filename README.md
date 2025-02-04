@@ -24,7 +24,7 @@ pip install scrapy_proxy_ip_pool
 ```python
 PROXY_POOL_SIZE = 1  # 代理池的大小(有封ip的网站建议开大一点)
 DOWNLOADER_MIDDLEWARES = {
-    'scrapy_proxy_pool.proxy_pool_downloader_middleware.ProxyPoolDownloaderMiddleware': 551,
+    'scrapy_proxy_ip_pool.proxy_pool_downloader_middleware.ProxyPoolDownloaderMiddleware': 551,
 }
 ```
 
