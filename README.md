@@ -5,6 +5,7 @@
 * 🥳支持Redis:支持使用Redis的IP代理池(也可本地List作为代理池)
 * 🥵最大限度榨干每个IP: 只有请求为指定异常or状态码(被封)时才会更换IP
 * 🤌简单配置: ez三步即可使用
+
 > 如果你不知道如何写"代理IP池"可以花几分钟看下(<10min)然后可以自己写,当然也可以用我写的现成代理池
 
 ## 安装
@@ -53,26 +54,36 @@ class IpSpider(scrapy.Spider):
         password = "你的代理密码"
         return f"http://{username}:{password}@{proxy_ip}/"  # 一次只需要返回一个ip
 ```
+
 ## 其他配置
+
 ### 一. 使用Redis作为 代理池
+
 * `settings.py`中配置如下内容:
+
 ```python
 PROXY_POOL_ENABLED = 'True'  # 使用Redis进行代理池的构建(默认为False)
 REDIS_URL = "redis://127.0.0.1:6379/0"
 ```
+
 * `spider`中添加`REDIS_KEY`变量指明存储在Redis中使用的键
+
 ```python
 import scrapy
 
+
 class IpSpider(scrapy.Spider):
     name = "ip"
-    REDIS_KEY = name # 最终为 REDIS_KEY+":proxy_pool"
+    REDIS_KEY = name  # 最终为 REDIS_KEY+":proxy_pool"
     ...
 ```
+
 ### 二. 指定异常和状态码
+
 * `settings.py`中配置如下内容
 * 说明: 如果遇到了这些异常, 就会更新IP; 如下默认配置的是常见可能被封异常和状态码
 * 注意❗:这里依据网址而定, 如果不确定, 两个可以设置为空列表,后续根据报错改
+
 ```python
 # 如下列举了常见的被封禁ip(或ip不可用)时的异常或状态码, 用户可以根据目标网站的情况在settings.py中自行配置
 NEED_UPDATE_PROXY_EXCEPTIONS = [
@@ -89,18 +100,25 @@ NEED_UPDATE_PROXY_CODES = [
     429,  # 请求频率超限，目标网站针对该代理IP实施了速率限制
 ]
 ```
+
 ## 关键代码
+
 #### 一. 更新IP
-* ⏱什么时候会被调用: 只有出现 `NEED_UPDATE_PROXY_EXCEPTIONS` 或 `NEED_UPDATE_PROXY_CODES` 中才会运行这个方法
+
+* ⏱什么时候会被调用:只有出现 `NEED_UPDATE_PROXY_EXCEPTIONS` 或 `NEED_UPDATE_PROXY_CODES` 中的异常或状态码,该方法才会被调用
+
 ```python
 # 伪代码
 def update_proxy(self, request: Request) -> Request:
-    last_ip=本次(有问题)请求的代理ip
+    last_ip = 本次(有问题)
+    请求的代理ip
     if last_ip in 代理池:
-        在代理池中更换该(有问题)的ip
+        在代理池中更换该(有问题)
+        的ip
     request.meta['proxy'] = 新ip
     return request
 ```
+
 ```python
 def update_proxy(self, request: Request) -> Request:
     """
@@ -126,3 +144,13 @@ def update_proxy(self, request: Request) -> Request:
     request.dont_filter = True  # 防止被过滤!!!
     return request
 ```
+
+## Version
+
+* `1.0.1`:【2025年2月4日】
+  1. 修改`1.0.0`中的Bug(①修改包名,②完善README.md文档)
+  2. 推送项目到Pypi,用户可以使用pip进行下载
+  3. 首次推送项目到[Gitee](https://gitee.com/twilight-and-morning-mist/scrapy-proxy-ip-pool): 
+***
+* `1.0.0`:【2025年2月3日】
+  1. 首次推送至[GitHub](https://github.com/Tlyer233/Scrapy-Proxy-IP-Pool),能够实现代理池功能
